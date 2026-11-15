@@ -16,6 +16,20 @@
             "proofRequired": false
         },
         {
+            "key": "colour",
+            "label": "Colour",
+            "type": "text",
+            "required": true,
+            "proofRequired": false
+        },
+        {
+            "key": "colour_reference",
+            "label": "Colour reference (shade code or lab dip)",
+            "type": "text",
+            "required": false,
+            "proofRequired": true
+        },
+        {
             "key": "fibre_composition",
             "label": "Fibre composition",
             "type": "text",
@@ -149,7 +163,8 @@
         "Certificate of origin",
         "Recycled content certificate",
         "Social audit report",
-        "Tech pack"
+        "Tech pack",
+        "Lab dip approval"
     ],
     "riskRules": [
         {
