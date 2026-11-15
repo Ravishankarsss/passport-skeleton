@@ -11,14 +11,14 @@ Passport Core is the config-driven engine that lives in `skeleton/`. A single in
 - **FieldStatus**: The status of a field value on a product record: `proven`, `claimed`, or `missing`.
 - **ProofLink**: A reference to a document that supports a field value. Contains a url, a label, and a documentType matching one of the Config's accepted proof document types.
 - **Passport**: The full record for one product: a map of field keys to values, statuses, and proof links.
-- **ReadinessScore**: An integer from 0 to 100 representing how proven the fields declared in a Config are for a Passport. Proven fields earn full weight, claimed fields earn half weight, missing fields earn zero.
+- **ReadinessScore**: An integer from 0 to 100 representing how proven the fields declared in a Config are for a Passport. Proven fields earn full weight, claimed fields earn half weight, missing fields earn zero. The score is computed using floor (not round), so it reaches 100 only when every Config field is proven.
 - **EffectiveStatus**: The status used by the Engine for scoring and risk-rule evaluation. For a FieldEntry with `status` `proven` but no proof links, the effective status is `claimed`. For a FieldEntry with a null `value`, the effective status is `missing`. Otherwise the effective status equals the recorded `status`.
 - **RiskRule**: A declarative rule in a Config that produces a named flag when its condition is met on a Passport.
 - **RiskFlag**: A named warning produced when a RiskRule's condition is satisfied.
 - **Engine**: The skeleton module that processes a Config and operates on Passports.
 - **StorageInterface**: The abstract contract for saving, loading, and listing Passports.
 - **JsonStorage**: The concrete implementation of StorageInterface that persists Passports as JSON files.
-- **ValidationIssue**: A structured error or warning returned when a Passport does not conform to its Config.
+- **ValidationIssue**: A structured error or warning returned when a Passport does not conform to its Config. The full set of `issueType` values includes: `"missing-required"`, `"proof-required"`, `"proof-status-conflict"`, `"value-status-conflict"`, `"unknown-field"`, `"unknown-proof-type"`, `"invalid-value"`, and `"invalid-proof-link"`.
 
 ---
 
@@ -69,7 +69,7 @@ Passport Core is the config-driven engine that lives in `skeleton/`. A single in
 4. IF a FieldEntry has `status` equal to `proven` but has an empty `proofLinks` array, its **effective status** for scoring and risk evaluation is `claimed`.
 5. IF a FieldEntry has `value` equal to null, its **effective status** for scoring and risk evaluation is `missing`, regardless of the recorded `status`.
 6. IF a FieldEntry has `value` equal to null and `status` not equal to `missing`, or has `status` equal to `proven` with an empty `proofLinks` array, THE Engine SHALL record the inconsistency but SHALL NOT reject Passport construction.
-7. THE Passport SHALL require each ProofLink to contain a non-empty `url` string of at most 2048 characters, a non-empty `label` string of at most 256 characters, and a non-empty `documentType` string.
+7. THE Passport SHALL require each ProofLink to contain a non-empty `url` string of at most 2048 characters that is an absolute URL with protocol `http:` or `https:` only, a non-empty `label` string of at most 256 characters, and a non-empty `documentType` string.
 
 ---
 
@@ -87,9 +87,10 @@ Passport Core is the config-driven engine that lives in `skeleton/`. A single in
 6. WHEN a FieldEntry has `value` equal to null and `status` not equal to `missing`, THE Engine SHALL include a ValidationIssue with `fieldKey` set to that field's key and `issueType` set to `'value-status-conflict'`.
 7. WHEN a Passport contains a field key not present in the Config, THE Engine SHALL include a ValidationIssue with `fieldKey` set to that unknown key and `issueType` set to `"unknown-field"`.
 8. WHEN a ProofLink on a Passport has a `documentType` value that is not present in the Config's `proofDocumentTypes` array, THE Engine SHALL include a ValidationIssue with `fieldKey` set to the field's key and `issueType` set to `'unknown-proof-type'`.
-9. WHEN a FieldEntry has a non-null `value` that does not conform to its declared field `type` — where `number` requires the string to represent a finite decimal number, `date` requires a valid ISO 8601 calendar date string (YYYY-MM-DD), and `url` requires a string parseable as an absolute URL — THE Engine SHALL include a ValidationIssue with `fieldKey` set to that field's key and `issueType` set to `'invalid-value'`. Fields of type `text` are not type-checked.
-10. THE Engine SHALL return all ValidationIssues found in a single pass, not stop at the first issue.
-11. THE Engine SHALL produce exactly one ValidationIssue per violated rule per field key, such that a single field violating multiple rules (e.g., both `missing-required` and `proof-required`) produces one ValidationIssue for each applicable rule.
+9. WHEN a FieldEntry has a non-null `value` that does not conform to its declared field `type` — where `number` requires the value to match `/^-?\d+(\.\d+)?$/` exactly, `date` requires a string matching `YYYY-MM-DD` that also survives a round-trip check: parsing the string to a date and formatting it back as `YYYY-MM-DD` must produce the original string, thereby rejecting calendar-impossible dates such as `2026-02-31`, and `url` requires a string that is an absolute URL with protocol `http:` or `https:` only — THE Engine SHALL include a ValidationIssue with `fieldKey` set to that field's key and `issueType` set to `'invalid-value'`. Fields of type `text` are not type-checked.
+10. WHEN a ProofLink on a Passport has a `url` that is not an absolute URL with protocol `http:` or `https:`, THE Engine SHALL include a ValidationIssue with `fieldKey` set to the field's key and `issueType` set to `'invalid-proof-link'`.
+11. THE Engine SHALL return all ValidationIssues found in a single pass, not stop at the first issue.
+12. THE Engine SHALL produce exactly one ValidationIssue per violated rule per field key, such that a single field violating multiple rules (e.g., both `missing-required` and `proof-required`) produces one ValidationIssue for each applicable rule.
 
 ---
 
@@ -104,11 +105,12 @@ Passport Core is the config-driven engine that lives in `skeleton/`. A single in
 3. FOR each Config field, THE Engine SHALL assign an effective score contribution: a field with effective status `proven` contributes its full weight; a field with effective status `claimed` contributes half its weight; a field with effective status `missing` contributes zero weight.
 4. THE Engine SHALL assign each required field a weight at least twice the weight assigned to each optional field when computing the ReadinessScore.
 5. WHEN every field declared in the Config has effective status `proven`, THE Engine SHALL return a ReadinessScore of 100.
-6. WHEN every field declared in the Config has effective status `missing`, THE Engine SHALL return a ReadinessScore of 0.
-7. IF a Config declares no fields, THE Engine SHALL return a ReadinessScore of 0.
-8. WHEN a Passport and a Config are identical on two separate calls, THE Engine SHALL return the same ReadinessScore both times (determinism property).
-9. WHEN a field's effective status changes from `missing` to `claimed`, THE Engine SHALL return a ReadinessScore greater than or equal to the ReadinessScore before that change (monotonicity — missing to claimed).
-10. WHEN a field's effective status changes from `claimed` to `proven`, THE Engine SHALL return a ReadinessScore greater than or equal to the ReadinessScore before that change (monotonicity — claimed to proven).
+6. THE Engine SHALL use `Math.floor` (truncation toward zero) rather than rounding when converting the weighted ratio to an integer, so that a ReadinessScore of 100 is returned **only when** every Config field has effective status `proven`.
+7. WHEN every field declared in the Config has effective status `missing`, THE Engine SHALL return a ReadinessScore of 0.
+8. IF a Config declares no fields, THE Engine SHALL return a ReadinessScore of 0.
+9. WHEN a Passport and a Config are identical on two separate calls, THE Engine SHALL return the same ReadinessScore both times (determinism property).
+10. WHEN a field's effective status changes from `missing` to `claimed`, THE Engine SHALL return a ReadinessScore greater than or equal to the ReadinessScore before that change (monotonicity — missing to claimed).
+11. WHEN a field's effective status changes from `claimed` to `proven`, THE Engine SHALL return a ReadinessScore greater than or equal to the ReadinessScore before that change (monotonicity — claimed to proven).
 
 ---
 
@@ -135,7 +137,7 @@ Passport Core is the config-driven engine that lives in `skeleton/`. A single in
 
 1. THE StorageInterface SHALL define a `save(passport: Passport): Promise<void>` operation that persists a Passport by its `productId`.
 2. THE StorageInterface SHALL define a `load(productId: string): Promise<Passport | null>` operation that returns the Passport for the given id, or null if no Passport with that id exists.
-3. THE StorageInterface SHALL define a `list(): Promise<string[]>` operation that returns the `productId` values of all stored Passports.
+3. THE StorageInterface SHALL define a `list(): Promise<string[]>` operation that returns only the `productId` values of Passports stored by `JsonStorage`; THE JsonStorage implementation SHALL return only stems of files whose name matches the productId pattern `/^[A-Za-z0-9_-]{1,100}\.json$/`, excluding temp files and any other stray files.
 4. WHEN `save` is called with a `productId` that already exists, THE StorageInterface SHALL overwrite the existing record.
 5. THE JsonStorage SHALL implement StorageInterface by reading and writing one JSON file per Passport in a configurable directory; IF the configured directory does not exist, THEN THE JsonStorage SHALL create it before the first write operation.
 6. IF `save` or `load` is called with a `productId` that does not conform to the character and length constraints defined in Requirement 3, THEN THE JsonStorage SHALL reject the operation with an error before performing any file I/O.
@@ -144,4 +146,6 @@ Passport Core is the config-driven engine that lives in `skeleton/`. A single in
 9. WHEN `save` is called followed by `load` for the same `productId`, THE JsonStorage SHALL return a Passport object whose every field value is strictly equal to the corresponding field value of the saved Passport.
 10. WHEN `load` is called with a `productId` for which no file exists, THE JsonStorage SHALL return null.
 11. IF a `save` operation fails due to an I/O error, THEN THE JsonStorage SHALL reject the returned Promise with an error indicating the write failure, and any previously stored Passport for that `productId` SHALL remain unchanged.
-12. IF `load` encounters a file whose content cannot be parsed as a valid Passport, THEN THE JsonStorage SHALL reject the returned Promise with an error indicating the corrupt or invalid record.
+12. WHEN `JsonStorage.save` performs an atomic write, THE JsonStorage SHALL use a temp filename that does not end in `.json` (e.g., `<productId>.tmp`) so that partially written files are never returned by `list`.
+13. IF `load` encounters a file whose content cannot be parsed as a valid Passport, THEN THE JsonStorage SHALL reject the returned Promise with an error indicating the corrupt or invalid record, using `parsePassport` internally to validate the parsed JSON.
+14. THE StorageInterface package SHALL export a `parsePassport(raw: unknown): Passport` function that validates the full runtime shape of a Passport and throws a descriptive error naming the offending field path if any structural constraint is violated; apps MAY call this function on form or file input before passing data to validation or scoring functions.

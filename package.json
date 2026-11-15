@@ -1,0 +1,11 @@
+{
+    "name": "passport-skeleton",
+    "private": true,
+    "workspaces": [
+        "skeleton",
+        "apps/*"
+    ],
+    "scripts": {
+        "test": "npm run test --workspaces --if-present"
+    }
+}
