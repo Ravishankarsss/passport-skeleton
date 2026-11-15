@@ -1,0 +1,170 @@
+{
+    "name": "Garment",
+    "fields": [
+        {
+            "key": "style_number",
+            "label": "Style number",
+            "type": "text",
+            "required": true,
+            "proofRequired": false
+        },
+        {
+            "key": "product_name",
+            "label": "Product name",
+            "type": "text",
+            "required": true,
+            "proofRequired": false
+        },
+        {
+            "key": "fibre_composition",
+            "label": "Fibre composition",
+            "type": "text",
+            "required": true,
+            "proofRequired": true
+        },
+        {
+            "key": "fabric_gsm",
+            "label": "Fabric weight (GSM)",
+            "type": "number",
+            "required": true,
+            "proofRequired": true
+        },
+        {
+            "key": "recycled_content_percent",
+            "label": "Recycled content (%)",
+            "type": "number",
+            "required": false,
+            "proofRequired": true
+        },
+        {
+            "key": "spinning_country",
+            "label": "Country of spinning",
+            "type": "text",
+            "required": true,
+            "proofRequired": false
+        },
+        {
+            "key": "fabric_mill",
+            "label": "Knitting or weaving mill",
+            "type": "text",
+            "required": true,
+            "proofRequired": false
+        },
+        {
+            "key": "dye_house",
+            "label": "Dyeing and finishing unit",
+            "type": "text",
+            "required": true,
+            "proofRequired": false
+        },
+        {
+            "key": "garment_factory",
+            "label": "Cut and sew factory",
+            "type": "text",
+            "required": true,
+            "proofRequired": false
+        },
+        {
+            "key": "country_of_origin",
+            "label": "Country of origin",
+            "type": "text",
+            "required": true,
+            "proofRequired": true
+        },
+        {
+            "key": "chemical_compliance",
+            "label": "Restricted substances compliance",
+            "type": "text",
+            "required": true,
+            "proofRequired": true
+        },
+        {
+            "key": "colour_fastness",
+            "label": "Colour fastness to washing (grade)",
+            "type": "number",
+            "required": false,
+            "proofRequired": true
+        },
+        {
+            "key": "shrinkage_percent",
+            "label": "Dimensional stability (% shrinkage)",
+            "type": "number",
+            "required": false,
+            "proofRequired": true
+        },
+        {
+            "key": "care_instructions",
+            "label": "Care instructions",
+            "type": "text",
+            "required": true,
+            "proofRequired": false
+        },
+        {
+            "key": "production_date",
+            "label": "Production date",
+            "type": "date",
+            "required": true,
+            "proofRequired": false
+        },
+        {
+            "key": "social_audit",
+            "label": "Factory social audit",
+            "type": "text",
+            "required": false,
+            "proofRequired": true
+        }
+    ],
+    "proofDocumentTypes": [
+        "Lab test report",
+        "Mill test certificate",
+        "Chemical compliance certificate",
+        "Certificate of origin",
+        "Recycled content certificate",
+        "Social audit report",
+        "Tech pack"
+    ],
+    "riskRules": [
+        {
+            "flag": "Fibre composition not proven",
+            "condition": {
+                "predicate": "fieldNotProven",
+                "field": "fibre_composition"
+            }
+        },
+        {
+            "flag": "Chemical compliance not proven",
+            "condition": {
+                "predicate": "fieldNotProven",
+                "field": "chemical_compliance"
+            }
+        },
+        {
+            "flag": "Origin not proven",
+            "condition": {
+                "predicate": "fieldNotProven",
+                "field": "country_of_origin"
+            }
+        },
+        {
+            "flag": "Dyeing unit unknown",
+            "condition": {
+                "predicate": "fieldMissing",
+                "field": "dye_house"
+            }
+        },
+        {
+            "flag": "Supply chain incomplete",
+            "condition": {
+                "predicate": "fieldMissing",
+                "field": "fabric_mill"
+            }
+        },
+        {
+            "flag": "Supply chain incomplete",
+            "condition": {
+                "predicate": "fieldMissing",
+                "field": "spinning_country"
+            }
+        }
+    ]
+}
