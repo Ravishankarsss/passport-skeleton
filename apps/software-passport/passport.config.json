@@ -1,0 +1,147 @@
+{
+    "name": "Software",
+    "fields": [
+        {
+            "key": "product_name",
+            "label": "Product name",
+            "type": "text",
+            "required": true,
+            "proofRequired": false
+        },
+        {
+            "key": "version",
+            "label": "Version",
+            "type": "text",
+            "required": true,
+            "proofRequired": false
+        },
+        {
+            "key": "release_date",
+            "label": "Release date",
+            "type": "date",
+            "required": true,
+            "proofRequired": false
+        },
+        {
+            "key": "maintainer",
+            "label": "Maintainer or supplier",
+            "type": "text",
+            "required": true,
+            "proofRequired": false
+        },
+        {
+            "key": "source_repository",
+            "label": "Source repository",
+            "type": "url",
+            "required": true,
+            "proofRequired": false
+        },
+        {
+            "key": "licence",
+            "label": "Licence",
+            "type": "text",
+            "required": true,
+            "proofRequired": true
+        },
+        {
+            "key": "runtime",
+            "label": "Runtime and version",
+            "type": "text",
+            "required": false,
+            "proofRequired": false
+        },
+        {
+            "key": "sbom_document",
+            "label": "Bill of materials (SBOM)",
+            "type": "url",
+            "required": true,
+            "proofRequired": false
+        },
+        {
+            "key": "direct_dependency_count",
+            "label": "Number of direct dependencies",
+            "type": "number",
+            "required": true,
+            "proofRequired": true
+        },
+        {
+            "key": "dependency_licences_reviewed",
+            "label": "Dependency licences reviewed",
+            "type": "text",
+            "required": false,
+            "proofRequired": true
+        },
+        {
+            "key": "known_vulnerabilities",
+            "label": "Known vulnerabilities (count)",
+            "type": "number",
+            "required": true,
+            "proofRequired": true
+        },
+        {
+            "key": "last_security_scan",
+            "label": "Last security scan date",
+            "type": "date",
+            "required": true,
+            "proofRequired": true
+        },
+        {
+            "key": "security_contact",
+            "label": "Security contact",
+            "type": "text",
+            "required": true,
+            "proofRequired": false
+        },
+        {
+            "key": "support_end_date",
+            "label": "Supported until",
+            "type": "date",
+            "required": false,
+            "proofRequired": false
+        }
+    ],
+    "proofDocumentTypes": [
+        "SBOM file",
+        "Licence file",
+        "Security scan report",
+        "Licence review",
+        "Release notes"
+    ],
+    "riskRules": [
+        {
+            "flag": "Licence not proven",
+            "condition": {
+                "predicate": "fieldNotProven",
+                "field": "licence"
+            }
+        },
+        {
+            "flag": "Vulnerability status not proven",
+            "condition": {
+                "predicate": "fieldNotProven",
+                "field": "known_vulnerabilities"
+            }
+        },
+        {
+            "flag": "No bill of materials",
+            "condition": {
+                "predicate": "fieldMissing",
+                "field": "sbom_document"
+            }
+        },
+        {
+            "flag": "No security contact",
+            "condition": {
+                "predicate": "fieldMissing",
+                "field": "security_contact"
+            }
+        },
+        {
+            "flag": "Security scan out of record",
+            "condition": {
+                "predicate": "fieldMissing",
+                "field": "last_security_scan"
+            }
+        }
+    ]
+}
