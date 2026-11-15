@@ -30,6 +30,34 @@
             "proofRequired": true
         },
         {
+            "key": "yarn_count",
+            "label": "Yarn count",
+            "type": "text",
+            "required": false,
+            "proofRequired": false
+        },
+        {
+            "key": "fabric_construction",
+            "label": "Fabric construction",
+            "type": "text",
+            "required": false,
+            "proofRequired": false
+        },
+        {
+            "key": "dyeing_method",
+            "label": "Dyeing method",
+            "type": "text",
+            "required": false,
+            "proofRequired": false
+        },
+        {
+            "key": "garment_finish",
+            "label": "Garment wash or finish",
+            "type": "text",
+            "required": false,
+            "proofRequired": false
+        },
+        {
             "key": "recycled_content_percent",
             "label": "Recycled content (%)",
             "type": "number",

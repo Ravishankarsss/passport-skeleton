@@ -1,0 +1,71 @@
+{
+    "productId": "M-TEE-HEAVY-260",
+    "configName": "Garment",
+    "fields": {
+        "style_number": {
+            "value": "M-TEE-260",
+            "status": "claimed",
+            "proofLinks": []
+        },
+        "product_name": {
+            "value": "Men's heavy jersey lava-wash T-shirt",
+            "status": "claimed",
+            "proofLinks": []
+        },
+        "fibre_composition": {
+            "value": "100% cotton",
+            "status": "claimed",
+            "proofLinks": []
+        },
+        "fabric_gsm": {
+            "value": "260",
+            "status": "claimed",
+            "proofLinks": []
+        },
+        "yarn_count": {
+            "value": "2/30s",
+            "status": "claimed",
+            "proofLinks": []
+        },
+        "fabric_construction": {
+            "value": "Heavy single jersey",
+            "status": "claimed",
+            "proofLinks": []
+        },
+        "dyeing_method": {
+            "value": "Garment dyed, pigment (lava)",
+            "status": "claimed",
+            "proofLinks": []
+        },
+        "garment_finish": {
+            "value": "Acid wash",
+            "status": "claimed",
+            "proofLinks": []
+        },
+        "garment_factory": {
+            "value": "Sample Apparel (demo name)",
+            "status": "claimed",
+            "proofLinks": []
+        },
+        "country_of_origin": {
+            "value": "India",
+            "status": "claimed",
+            "proofLinks": []
+        },
+        "chemical_compliance": {
+            "value": null,
+            "status": "missing",
+            "proofLinks": []
+        },
+        "care_instructions": {
+            "value": "Wash separately, colour may fade",
+            "status": "claimed",
+            "proofLinks": []
+        },
+        "production_date": {
+            "value": "2026-09-01",
+            "status": "claimed",
+            "proofLinks": []
+        }
+    }
+}

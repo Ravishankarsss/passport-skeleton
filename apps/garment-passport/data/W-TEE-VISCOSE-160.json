@@ -1,0 +1,116 @@
+{
+    "productId": "W-TEE-VISCOSE-160",
+    "configName": "Garment",
+    "fields": {
+        "style_number": {
+            "value": "W-TEE-160",
+            "status": "claimed",
+            "proofLinks": []
+        },
+        "product_name": {
+            "value": "Women's crushed viscose T-shirt",
+            "status": "claimed",
+            "proofLinks": []
+        },
+        "fibre_composition": {
+            "value": "100% viscose",
+            "status": "proven",
+            "proofLinks": [
+                {
+                    "url": "https://example.com/proofs/w-tee-160-fibre.pdf",
+                    "label": "Fibre analysis report",
+                    "documentType": "Lab test report"
+                }
+            ]
+        },
+        "fabric_gsm": {
+            "value": "160",
+            "status": "proven",
+            "proofLinks": [
+                {
+                    "url": "https://example.com/proofs/w-tee-160-gsm.pdf",
+                    "label": "GSM test report",
+                    "documentType": "Lab test report"
+                }
+            ]
+        },
+        "yarn_count": {
+            "value": "30s",
+            "status": "claimed",
+            "proofLinks": []
+        },
+        "fabric_construction": {
+            "value": "Single jersey",
+            "status": "claimed",
+            "proofLinks": []
+        },
+        "garment_finish": {
+            "value": "Garment-form crush effect",
+            "status": "claimed",
+            "proofLinks": []
+        },
+        "spinning_country": {
+            "value": "India",
+            "status": "claimed",
+            "proofLinks": []
+        },
+        "fabric_mill": {
+            "value": "Sample Knits (demo name)",
+            "status": "claimed",
+            "proofLinks": []
+        },
+        "dye_house": {
+            "value": "Sample Dyers (demo name)",
+            "status": "claimed",
+            "proofLinks": []
+        },
+        "garment_factory": {
+            "value": "Sample Apparel (demo name)",
+            "status": "claimed",
+            "proofLinks": []
+        },
+        "country_of_origin": {
+            "value": "India",
+            "status": "proven",
+            "proofLinks": [
+                {
+                    "url": "https://example.com/proofs/w-tee-160-origin.pdf",
+                    "label": "Certificate of origin",
+                    "documentType": "Certificate of origin"
+                }
+            ]
+        },
+        "chemical_compliance": {
+            "value": "Meets buyer restricted substances list",
+            "status": "proven",
+            "proofLinks": [
+                {
+                    "url": "https://example.com/proofs/w-tee-160-rsl.pdf",
+                    "label": "RSL test certificate",
+                    "documentType": "Chemical compliance certificate"
+                }
+            ]
+        },
+        "shrinkage_percent": {
+            "value": "5",
+            "status": "proven",
+            "proofLinks": [
+                {
+                    "url": "https://example.com/proofs/w-tee-160-shrinkage.pdf",
+                    "label": "Dimensional stability report",
+                    "documentType": "Lab test report"
+                }
+            ]
+        },
+        "care_instructions": {
+            "value": "Gentle machine wash cold, do not tumble dry",
+            "status": "claimed",
+            "proofLinks": []
+        },
+        "production_date": {
+            "value": "2015-06-01",
+            "status": "claimed",
+            "proofLinks": []
+        }
+    }
+}
